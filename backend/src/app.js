@@ -11,7 +11,7 @@ const PORT = process.env.PORT || 3000;
 const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:3000',
-  'https://nutrirecipe-frontend.onrender.com',
+  'https://nutrirecipe-front.onrender.com',
   'https://nutrirecipe.onrender.com'
 ];
 
