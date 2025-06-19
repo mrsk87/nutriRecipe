@@ -8,8 +8,24 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middleware
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:3000',
+  'https://nutrirecipe-frontend.onrender.com',
+  'https://nutrirecipe.onrender.com'
+];
+
 app.use(cors({
-  origin: 'http://localhost:5173', // URL do frontend Vue.js
+  origin: function (origin, callback) {
+    // Permitir requests sem origin (mobile apps, etc.) em development
+    if (!origin && process.env.NODE_ENV !== 'production') return callback(null, true);
+    
+    if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true
 }));
 
@@ -21,7 +37,7 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: false, // true em produção com HTTPS
+    secure: process.env.NODE_ENV === 'production', // true em produção com HTTPS
     httpOnly: true,
     maxAge: 24 * 60 * 60 * 1000 // 24 horas
   }
